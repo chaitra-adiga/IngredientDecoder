@@ -1,0 +1,48 @@
+# Ignore virtual environment directory
+venv/
+
+# Ignore log files
+*.log
+
+# Ignore build directories
+dist/
+build/
+out/
+
+# Ignore environment variable files
+.env
+.env.local
+
+
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore coverage reports
+coverage/
+*.lcov
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore client secret file
+client_secret_286034055187-obobc9opadhrimr9ls3tb7ohssh3psse.apps.googleusercontent.com.json
+
+# Media files
+media/
+!media/.gitkeep
+
+# Except default images
+!media/default.png
+#pip install --q -r  requirements.txt --cache-dir .cache .env
+.env
