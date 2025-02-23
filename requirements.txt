@@ -1,0 +1,8 @@
+# filepath: requirements.txt
+langchain
+pytest
+python-dotenv
+google-cloud-vision
+pillow
+django
+psycopg2-binary
