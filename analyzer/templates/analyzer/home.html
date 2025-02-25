@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Ingredient Decoder</h2>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="inputTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="text-tab" data-bs-toggle="tab" data-bs-target="#text-input" type="button" role="tab">Text Input</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-input" type="button" role="tab">Image Upload</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="barcode-tab" data-bs-toggle="tab" data-bs-target="#barcode-input" type="button" role="tab">Barcode</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content p-3 border border-top-0 rounded-bottom" id="inputTabsContent">
+                    <!-- Text Input Tab -->
+                    <div class="tab-pane fade show active" id="text-input" role="tabpanel">
+                        <form id="textForm">
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Product Name</label>
+                                <input type="text" class="form-control" id="productName" name="product_name" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="productCategory" class="form-label">Product Category</label>
+                                <select class="form-select" id="productCategory" name="product_category" required>
+                                    <option value="">Select a category</option>
+                                    <option value="skincare">Skincare</option>
+                                    <option value="haircare">Haircare</option>
+                                    <option value="makeup">Makeup</option>
+                                    <option value="food">Food</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="ingredientsList" class="form-label">Ingredients List</label>
+                                <textarea class="form-control" id="ingredientsList" name="ingredients_text" rows="5" placeholder="Paste the ingredients list here..." required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Analyze Ingredients</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Image Input Tab -->
+                    <div class="tab-pane fade" id="image-input" role="tabpanel">
+                        <form id="imageForm">
+                            <div class="mb-3">
+                                <label for="imageProductName" class="form-label">Product Name</label>
+                                <input type="text" class="form-control" id="imageProductName" name="product_name" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="imageProductCategory" class="form-label">Product Category</label>
+                                <select class="form-select" id="imageProductCategory" name="product_category" required>
+                                    <option value="">Select a category</option>
+                                    <option value="skincare">Skincare</option>
+                                    <option value="haircare">Haircare</option>
+                                    <option value="makeup">Makeup</option>
+                                    <option value="food">Food</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="ingredientsImage" class="form-label">Upload Image of Ingredients</label>
+                                <input type="file" class="form-control" id="ingredientsImage" name="ingredients_image" accept="image/*" required>
+                                <div class="form-text">Upload a clear image of the ingredients list.</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Analyze Ingredients</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Barcode Input Tab -->
+                    <div class="tab-pane fade" id="barcode-input" role="tabpanel">
+                        <form id="barcodeForm">
+                            <div class="mb-3">
+                                <label for="barcodeInput" class="form-label">Barcode Number</label>
+                                <input type="text" class="form-control" id="barcodeInput" name="barcode" placeholder="Enter product barcode..." required>
+                                <div class="form-text">Enter the 12 or 13-digit barcode number from the product.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="barcodeProductCategory" class="form-label">Product Category</label>
+                                <select class="form-select" id="barcodeProductCategory" name="product_category" required>
+                                    <option value="">Select a category</option>
+                                    <option value="skincare">Skincare</option>
+                                    <option value="haircare">Haircare</option>
+                                    <option value="makeup">Makeup</option>
+                                    <option value="food">Food</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Analyze Ingredients</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results will appear here -->
+        <div id="results" class="d-none">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Analysis Results</h3>
+                </div>
+                <div class="card-body" id="resultsContent">
+                    <!-- Results will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form submit handlers
+    document.getElementById('textForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitForm(this, new FormData(this));
+    });
+    
+    document.getElementById('imageForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        submitForm(this, formData);
+    });
+    
+    document.getElementById('barcodeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        submitForm(this, formData);
+    });
+    
+    function submitForm(form, formData) {
+        // Show loading indicator
+        form.querySelector('button[type="submit"]').disabled = true;
+        form.querySelector('button[type="submit"]').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Analyzing...';
+        
+        // Send AJAX request
+        fetch('/api/analyze/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.error || 'Something went wrong');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayResults(data);
+        })
+        .catch(error => {
+            alert(error.message || 'Error analyzing ingredients');
+        })
+        .finally(() => {
+            // Reset button
+            form.querySelector('button[type="submit"]').disabled = false;
+            form.querySelector('button[type="submit"]').textContent = 'Analyze Ingredients';
+        });
+    }
+    
+    function displayResults(data) {
+        const resultsDiv = document.getElementById('results');
+        const resultsContent = document.getElementById('resultsContent');
+        
+        // Clear previous results
+        resultsContent.innerHTML = '';
+        
+        // Product info
+        const productInfo = document.createElement('div');
+        productInfo.innerHTML = `
+            <h4>${data.product.name}</h4>
+            <p class="text-muted">Category: ${data.product.category.charAt(0).toUpperCase() + data.product.category.slice(1)}</p>
+        `;
+        
+        // Overall rating
+        const overallRating = data.analysis.overall_rating;
+        const ratingDiv = document.createElement('div');
+        ratingDiv.className = `rating-box rating-${overallRating} mb-4`;
+        ratingDiv.innerHTML = `
+            <h3>Overall Toxicity Rating: ${overallRating}/10</h3>
+            <p>${data.analysis.summary}</p>
+        `;
+        
+        // Ingredients analysis
+        const ingredientsDiv = document.createElement('div');
+        ingredientsDiv.innerHTML = `<h4>Ingredients Analysis:</h4>`;
+        
+        const ingredientList = document.createElement('div');
+        ingredientList.className = 'accordion mt-3';
+        ingredientList.id = 'ingredientsAccordion';
+        
+        data.analysis.ingredient_analysis.forEach((ingredient, index) => {
+            const accordionItem = document.createElement('div');
+            accordionItem.className = 'accordion-item';
+            
+            const headingId = `heading${index}`;
+            const collapseId = `collapse${index}`;
+            
+            accordionItem.innerHTML = `
+                <h2 class="accordion-header" id="${headingId}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}">
+                        <span class="me-2 badge rating-${ingredient.toxicity_rating}">${ingredient.toxicity_rating}/10</span> ${ingredient.name}
+                    </button>
+                </h2>
+                <div id="${collapseId}" class="accordion-collapse collapse" data-bs-parent="#ingredientsAccordion">
+                    <div class="accordion-body">
+                        <p>${ingredient.description}</p>
+                        <p class="text-danger">${ingredient.concerns}</p>
+                    </div>
+                </div>
+            `;
+            
+            ingredientList.appendChild(accordionItem);
+        });
+        
+        ingredientsDiv.appendChild(ingredientList);
+        
+        // Append all sections
+        resultsContent.appendChild(productInfo);
+        resultsContent.appendChild(ratingDiv);
+        resultsContent.appendChild(ingredientsDiv);
+        
+        // Show results
+        resultsDiv.classList.remove('d-none');
+    }
+});
+</script>
+{% endblock %}

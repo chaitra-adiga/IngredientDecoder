@@ -25,7 +25,6 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 API_KEY = config('API_KEY')
-
 ALLOWED_HOSTS = []
 
 
@@ -38,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'analyzer',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +70,26 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ingredient_decoder.wsgi.application'
+# Add these lines at the bottom of your settings.py file
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
+# Make sure TEMPLATES contains the right configuration
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],  # Add this line if it's not there
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -77,11 +97,11 @@ WSGI_APPLICATION = 'ingredient_decoder.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config('DATABASE_NAME'),  # The name of the database you created
-        "USER": config('DATABASE_USER'),  # The username for your PostgreSQL database
-        "PASSWORD": config('DATABASE_PASSWORD'),  # The password you set during PostgreSQL installation
-        "HOST": config('DATABASE_HOST', default='localhost'),  # Or your database server's IP address
-        "PORT": config('DATABASE_PORT', default='5432'),  # Default PostgreSQL port
+        "NAME": "Ingredient_Decoder",  # The name of the database you created
+        "USER": "postgres",  # The username for your PostgreSQL database
+        "PASSWORD": "1234",  # The password you set during PostgreSQL installation
+        "HOST": "localhost",  # Or your database server's IP address
+        "PORT": "5432",  # Default PostgreSQL port
     }
 }
 
